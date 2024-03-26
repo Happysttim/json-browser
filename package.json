@@ -1,0 +1,22 @@
+{
+  "name": "json-brwoser",
+  "version": "1.0.0",
+  "description": "JSON Browser",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Happysttim/JSONBrowser.git"
+  },
+  "author": "happysttim",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Happysttim/JSONBrowser/issues"
+  },
+  "homepage": "https://github.com/Happysttim/JSONBrowser#readme",
+  "dependencies": {
+    "typescript": "^5.4.3"
+  }
+}
