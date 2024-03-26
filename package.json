@@ -3,20 +3,24 @@
   "version": "1.0.0",
   "description": "JSON Browser",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx tsx test"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Happysttim/JSONBrowser.git"
+    "url": "git+https://github.com/Happysttim/json-browser.git"
   },
   "author": "happysttim",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Happysttim/JSONBrowser/issues"
+    "url": "https://github.com/Happysttim/json-browser/issues"
   },
-  "homepage": "https://github.com/Happysttim/JSONBrowser#readme",
+  "homepage": "https://github.com/Happysttim/json-browser#readme",
   "dependencies": {
     "typescript": "^5.4.3"
+  },
+  "devDependencies": {
+    "tsx": "^4.7.1"
   }
 }
