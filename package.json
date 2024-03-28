@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "lint": "npx lint .",
     "test": "npx tsx test"
   },
   "repository": {
@@ -18,9 +19,13 @@
   },
   "homepage": "https://github.com/Happysttim/json-browser#readme",
   "dependencies": {
+    "long": "^5.2.3",
     "typescript": "^5.4.3"
   },
   "devDependencies": {
+    "eslint": "^8.57.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-promise": "^6.1.1",
     "tsx": "^4.7.1"
   }
 }
