@@ -19,7 +19,6 @@
   },
   "homepage": "https://github.com/Happysttim/json-browser#readme",
   "dependencies": {
-    "long": "^5.2.3",
     "typescript": "^5.4.3"
   },
   "devDependencies": {
