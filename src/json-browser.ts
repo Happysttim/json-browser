@@ -10,23 +10,76 @@ class JSONBrowser {
     private length = 0;
     private jsonString!: string;
     private depth = 0;
-    private jsonBody: JSONObject = {};
     private schemaKeys: string[] = [];
 
     get json(): JSONObject {
         return this.jsonBody;
     }
 
+    safeString(key: string): string {
+        return (this.jsonBody[key] as string) ?? '';
+    }
+
+    // MAX_SAFE_NUM 또는 MIN_SAFE_NUM 범위를 벗어나면 string으로 반환
+    safeNumberString(key: string): number | string {
+        if(!isNaN(this.jsonBody[key])) {
+            const numbering = this.string2Number(this.jsonBody[key]);
+            return numbering > Number.MAX_SAFE_INTEGER || numbering < Number.MIN_SAFE_INTEGER ? this.jsonBody[key] as string : numbering;
+        }
+
+        return 0;
+    }
+
+    safeBoolean(key: string): boolean {
+        return (this.jsonBody[key] as boolean) ?? false;
+    }
+
+    safeArray<T = any>(key: string): T[] {
+        return (this.jsonBody[key] as T[]) ?? [];
+    }
+
+    index(i: number): JSONBrowser {
+        return new JSONBrowser(this.jsonBody[i]);
+    }
+
+    next(key: string): JSONBrowser {
+        return new JSONBrowser(this.jsonBody[key]);
+    }
+
+    get<T>(key: string): T {
+        return this.jsonBody[key] as T;
+    }
+
+    ynToBoolean(key: string): boolean {
+        const yn = ((this.jsonBody[key] as string) ?? '').trim().toLocaleLowerCase();
+        if(yn == 'y' || yn == 'yes') {
+            return true;
+        } else if(yn == 'n' || yn == 'no') {
+            return false;
+        }
+
+        return false;
+    }
+
     static parse(json: string): JSONBrowser {
-        const browser = new JSONBrowser();
+        const browser = new JSONBrowser({});
         browser.jsonString = json.trimStart();
         browser.length = json.length;
 
         browser.jsonBody = browser.readValue(browser.jsonBody) as JSONObject;
 
-        return browser;
+        return new JSONBrowser(browser.jsonBody);
     }
 
+    private string2Number(num: string): number {
+        if(/[\.]/.test(num)) {
+            return parseFloat(num);
+        } else {
+            return parseInt(num);
+        }
+    }
+
+    // Object 읽어옴
     private readObject(jsonStack: JSONObject): JSONObject {
         ++this.depth;
         const resultStack = jsonStack;
@@ -45,11 +98,9 @@ class JSONBrowser {
                     }
                     this.passingWhitespace();
                     jsonStack[key] = {};
-                    console.log('pos: ' + this.pos);
                     const value = this.readValue(jsonStack[key]);
                     this.schemaKeys.push(`${this.depth}$${key}`);
                     resultStack[key] = value;
-                    console.log('pos: ' + this.pos);
                     break;
             }
         }
@@ -97,8 +148,6 @@ class JSONBrowser {
         const resultArray: any[] = [];
         while(this.pos < this.length) {
             const readChar = this.jsonString.charAt(this.pos++);
-
-            console.log(readChar + ' input in ' + resultArray + ' resultArray size is ' + resultArray.length);
             
             if(/[\-0-9]/.test(readChar)) {
                 resultArray.push(this.readNumberOrString());
@@ -113,7 +162,6 @@ class JSONBrowser {
             }
 
             const nowChar = this.jsonString.charAt(this.pos);
-            console.log(`nowChar: ${nowChar}`);
 
             if(readChar == ']') {
                 return resultArray;
@@ -129,7 +177,6 @@ class JSONBrowser {
         let isFloat = false;
         while(this.pos < this.length) {
             const readChar = this.jsonString.charAt(this.pos);
-            console.log(`readChar: ${readChar}`);
             this.passingWhitespace();
             const regex = /[\d\.]/;
             if(regex.test(readChar)) {
@@ -211,7 +258,7 @@ class JSONBrowser {
         }
     }
 
-    private constructor() {
+    private constructor(private jsonBody: JSONObject) {
 
     }
 
