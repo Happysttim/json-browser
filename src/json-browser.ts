@@ -105,12 +105,17 @@ class JSONBrowser {
             } else if(/[tTfF]/.test(readChar)) {
                 resultArray.push(this.readTrueOfFalse());
             } else if(readChar == '{') {
-                resultArray.push(this.readObject(jsonStack));
+                resultArray.push(this.readObject([]));
             } else if(readChar == '[') {
-                resultArray.push(this.readArray(jsonStack));
+                resultArray.push(this.readArray([]));
             } else if(readChar == '"') {
                 resultArray.push(this.readString());
-            } else if(readChar == ']') {
+            }
+
+            const nowChar = this.jsonString.charAt(this.pos);
+            console.log(`nowChar: ${nowChar}`);
+
+            if(readChar == ']') {
                 return resultArray;
             }
         }
@@ -123,18 +128,17 @@ class JSONBrowser {
         let numberString = this.jsonString.charAt(this.pos - 1);
         let isFloat = false;
         while(this.pos < this.length) {
-            const readChar = this.jsonString.charAt(this.pos++);
-            const nextChar = this.jsonString.charAt(this.pos);
+            const readChar = this.jsonString.charAt(this.pos);
+            console.log(`readChar: ${readChar}`);
             this.passingWhitespace();
             const regex = /[\d\.]/;
-            if(!regex.test(readChar)) {
+            if(regex.test(readChar)) {
                 numberString += readChar;
                 if(readChar == '.') {
                     isFloat = true;
                 }
-            } 
-
-            if(!regex.test(nextChar)) {
+                this.pos++;
+            } else {
                 const numbering = isFloat ? parseFloat(numberString) : parseInt(numberString);
 
                 if(numbering > Number.MAX_SAFE_INTEGER || numbering < Number.MIN_SAFE_INTEGER) {

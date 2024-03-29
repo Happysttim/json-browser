@@ -1,6 +1,7 @@
 import JSONBrowser from '../src/json-browser';
 
-const jsonString = '{"people": [{"name": "kim", "age": "20"},{"name": "noh", "age": "30"}] } ';
+const jsonString = '{"arrayTest": [{"Name": "NOH", "Age": 25, "HasNum": [1,2,3,4,5]},{"Name": "Kim", "Age": 23}]}';
 const browser = JSONBrowser.parse(jsonString);
 
-console.log(browser.json);
+// console.log(JSON.parse(jsonString));
+console.log(browser.json["arrayTest"][0]["HasNum"]);
