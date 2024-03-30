@@ -21,16 +21,6 @@ const game: Game = {
     userInfo: [
         {
             user: {
-                id: 'user2',
-                name: 'Pak User',
-                age: 20,
-                gender: 'male',
-            },
-            level: 20,
-            isOnline: true
-        },
-        {
-            user: {
                 id: 'user1',
                 name: 'Kim User',
                 age: 10,
@@ -38,6 +28,16 @@ const game: Game = {
             },
             level: 99,
             isOnline: false
+        },
+        {
+            user: {
+                id: 'user2',
+                name: 'Pak User',
+                age: 20,
+                gender: 'male',
+            },
+            level: 20,
+            isOnline: true
         },
         {
             user: {
@@ -57,4 +57,8 @@ console.log(jsonString);
 
 const browser = JSONBrowser.parse(jsonString);
 console.log(browser.json);
-console.log(browser.next('userInfo').index(0).get<User>("user"));
+console.log(browser.nextScope('userInfo').index(0).get<User>("user"));
+
+const jsonString2 = '{"numbers": [[1,2,3,4],[5,6,7,8]]}';
+const browser2 = JSONBrowser.parse(jsonString2);
+console.log(browser2.json);

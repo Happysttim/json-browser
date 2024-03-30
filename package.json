@@ -2,7 +2,7 @@
   "name": "json-brwoser",
   "version": "1.0.0",
   "description": "JSON Browser",
-  "main": "index.js",
+  "main": "./src/json-browser.ts",
   "type": "module",
   "scripts": {
     "lint": "npx lint .",

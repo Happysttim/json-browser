@@ -42,11 +42,11 @@ class JSONBrowser {
         return new JSONBrowser(this.jsonBody[i]);
     }
 
-    next(key: string): JSONBrowser {
+    nextScope(key: string): JSONBrowser {
         return new JSONBrowser(this.jsonBody[key]);
     }
 
-    get<T>(key: string): T {
+    get<T = any>(key: string): T {
         return this.jsonBody[key] as T;
     }
 
@@ -115,7 +115,7 @@ class JSONBrowser {
                 case '\{':
                     return this.readObject(jsonStack);
                 case '\[':
-                    return this.readArray(jsonStack);
+                    return this.readArray();
                 case '\"':
                     return this.readString();
                 case 't':
@@ -143,7 +143,7 @@ class JSONBrowser {
         return jsonStack;
     }
 
-    private readArray(jsonStack: JSONObject): any[] {
+    private readArray(): any[] {
         this.passingWhitespace();
         const resultArray: any[] = [];
         while(this.pos < this.length) {
@@ -156,12 +156,10 @@ class JSONBrowser {
             } else if(readChar == '{') {
                 resultArray.push(this.readObject([]));
             } else if(readChar == '[') {
-                resultArray.push(this.readArray([]));
+                resultArray.push(this.readArray());
             } else if(readChar == '"') {
                 resultArray.push(this.readString());
             }
-
-            const nowChar = this.jsonString.charAt(this.pos);
 
             if(readChar == ']') {
                 return resultArray;
