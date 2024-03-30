@@ -1,6 +1,6 @@
-type JSONValueLikes = JSONObject | any[] | number | string | boolean;
+type JSONValueLikes = JSONObject | unknown[] | number | string | boolean;
 
-type JSONObject<T = any> = {
+type JSONObject<T = unknown> = {
     [P in keyof T]?: T[P]
 }
 
@@ -17,45 +17,79 @@ class JSONBrowser {
     }
 
     safeString(key: string): string {
-        return (this.jsonBody[key] as string) ?? '';
+        if(this.checkObject()) {
+            const json = this.jsonBody as Record<string, string>;
+            return json[key] ?? '';
+        }
+
+        return '';
     }
 
     // MAX_SAFE_NUM 또는 MIN_SAFE_NUM 범위를 벗어나면 string으로 반환
     safeNumberString(key: string): number | string {
-        if(!isNaN(this.jsonBody[key])) {
-            const numbering = this.string2Number(this.jsonBody[key]);
-            return numbering > Number.MAX_SAFE_INTEGER || numbering < Number.MIN_SAFE_INTEGER ? this.jsonBody[key] as string : numbering;
+        if(this.checkObject()) {
+            const json = this.jsonBody as Record<string, string | number>;
+            if(!isNaN(json[key] as number)) {
+                const numbering = this.string2Number(json[key] as string);
+                return numbering > Number.MAX_SAFE_INTEGER || numbering < Number.MIN_SAFE_INTEGER ? json[key] as string : numbering;
+            }
         }
 
         return 0;
     }
 
     safeBoolean(key: string): boolean {
-        return (this.jsonBody[key] as boolean) ?? false;
+        if(this.checkObject()) {
+            const json = this.jsonBody as Record<string, boolean>;
+            return json[key] ?? false;
+        } 
+        return false;
     }
 
     safeArray<T = any>(key: string): T[] {
-        return (this.jsonBody[key] as T[]) ?? [];
+        if(this.checkObject()) {
+            const json = this.jsonBody as Record<string, T[]>;
+            return json[key] ?? [];
+        }
+        return [];
     }
 
     index(i: number): JSONBrowser {
-        return new JSONBrowser(this.jsonBody[i]);
+        if(this.checkObject()) {
+            const json = this.jsonBody as JSONValueLikes[];
+            return new JSONBrowser(json[i] ?? []);
+        }
+
+        return new JSONBrowser([]);
     }
 
     nextScope(key: string): JSONBrowser {
-        return new JSONBrowser(this.jsonBody[key]);
+        if(this.checkObject()) {
+            const json = this.jsonBody as Record<string, JSONObject>;
+            return new JSONBrowser(json[key] ?? {});
+        }
+
+        return new JSONBrowser({});
     }
 
     get<T = any>(key: string): T {
-        return this.jsonBody[key] as T;
+        if(this.checkObject()) {
+            const json = this.jsonBody as Record<string, T>;
+            return json[key] ?? {} as T;
+        }
+
+        return {} as T;
     }
 
     ynToBoolean(key: string): boolean {
-        const yn = ((this.jsonBody[key] as string) ?? '').trim().toLocaleLowerCase();
-        if(yn == 'y' || yn == 'yes') {
-            return true;
-        } else if(yn == 'n' || yn == 'no') {
-            return false;
+        if(this.checkObject()) {
+            const json = this.jsonBody as Record<string ,string>;
+            const yn = (json[key] ?? '').trim().toLocaleLowerCase();
+            if(yn == 'y' || yn == 'yes') {
+                return true;
+            } else if(yn == 'n' || yn == 'no') {
+                return false;
+            }
         }
 
         return false;
@@ -69,6 +103,10 @@ class JSONBrowser {
         browser.jsonBody = browser.readValue(browser.jsonBody) as JSONObject;
 
         return new JSONBrowser(browser.jsonBody);
+    }
+
+    private checkObject(): boolean {
+        return typeof this.jsonBody === 'object';
     }
 
     private string2Number(num: string): number {
@@ -97,10 +135,11 @@ class JSONBrowser {
                         throw new Error('Invalid JSON grammar.');
                     }
                     this.passingWhitespace();
-                    jsonStack[key] = {};
-                    const value = this.readValue(jsonStack[key]);
+                    const json = jsonStack as Record<string ,JSONObject>;
+                    json[key] = {};
+                    const value = this.readValue(json[key]);
                     this.schemaKeys.push(`${this.depth}$${key}`);
-                    resultStack[key] = value;
+                    (resultStack as Record<string, JSONValueLikes>)[key] = value;
                     break;
             }
         }
