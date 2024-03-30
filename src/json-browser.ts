@@ -126,21 +126,21 @@ class JSONBrowser {
         while(this.pos < this.length) {
             const readChar = this.jsonString.charAt(this.pos++);
             switch(readChar) {
-                case '}':
-                    --this.depth;
-                    return resultStack;
-                case '\"':
-                    const key = this.readString();
-                    if(this.jsonString.charAt(this.pos++) != ':') {
-                        throw new Error('Invalid JSON grammar.');
-                    }
-                    this.passingWhitespace();
-                    const json = jsonStack as Record<string ,JSONObject>;
-                    json[key] = {};
-                    const value = this.readValue(json[key]);
-                    this.schemaKeys.push(`${this.depth}$${key}`);
-                    (resultStack as Record<string, JSONValueLikes>)[key] = value;
-                    break;
+            case '}':
+                --this.depth;
+                return resultStack;
+            case '\"':
+                const key = this.readString();
+                if(this.jsonString.charAt(this.pos++) != ':') {
+                    throw new Error('Invalid JSON grammar.');
+                }
+                this.passingWhitespace();
+                const json = jsonStack as Record<string ,JSONObject>;
+                json[key] = {};
+                const value = this.readValue(json[key]);
+                this.schemaKeys.push(`${this.depth}$${key}`);
+                (resultStack as Record<string, JSONValueLikes>)[key] = value;
+                break;
             }
         }
         throw new Error('Invalid JSON grammar.');
@@ -151,40 +151,40 @@ class JSONBrowser {
         this.passingWhitespace();
         while(this.pos < this.length) {
             switch(this.jsonString.charAt(this.pos++)) {
-                case '\{':
-                    return this.readObject(jsonStack);
-                case '\[':
-                    return this.readArray();
-                case '\"':
-                    return this.readString();
-                case 't':
-                case 'T':
-                case 'f':
-                case 'F':
-                    return this.readTrueOfFalse();
-                case '-':
-                case '0':
-                case '1':
-                case '2':
-                case '3':
-                case '4':
-                case '5':
-                case '6':
-                case '7':
-                case '8':
-                case '9':
-                    return this.readNumberOrString();
-                default:
-                    throw Error('Invalid JSON grammar.');
+            case '\{':
+                return this.readObject(jsonStack);
+            case '\[':
+                return this.readArray();
+            case '\"':
+                return this.readString();
+            case 't':
+            case 'T':
+            case 'f':
+            case 'F':
+                return this.readTrueOfFalse();
+            case '-':
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+                return this.readNumberOrString();
+            default:
+                throw Error('Invalid JSON grammar.');
             }
         }
 
         return jsonStack;
     }
 
-    private readArray(): any[] {
+    private readArray(): JSONValueLikes[] {
         this.passingWhitespace();
-        const resultArray: any[] = [];
+        const resultArray: JSONValueLikes[] = [];
         while(this.pos < this.length) {
             const readChar = this.jsonString.charAt(this.pos++);
             
@@ -284,13 +284,13 @@ class JSONBrowser {
     private passingWhitespace() {
         while(this.pos < this.length) {
             switch(this.jsonString.charAt(this.pos)) {
-                case ' ':
-                case '\t':
-                case '\b':
-                case '\n':
-                    ++this.pos;
-                    break;
-                default: return;
+            case ' ':
+            case '\t':
+            case '\b':
+            case '\n':
+                ++this.pos;
+                break;
+            default: return;
             }
         }
     }
