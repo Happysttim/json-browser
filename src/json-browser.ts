@@ -175,7 +175,7 @@ class JSONBrowser {
             case '9':
                 return this.readNumberOrString();
             default:
-                throw Error('Invalid JSON grammar.');
+                throw new Error('Invalid JSON grammar.');
             }
         }
 
@@ -193,7 +193,7 @@ class JSONBrowser {
             } else if(/[tTfF]/.test(readChar)) {
                 resultArray.push(this.readTrueOfFalse());
             } else if(readChar == '{') {
-                resultArray.push(this.readObject([]));
+                resultArray.push(this.readObject({}));
             } else if(readChar == '[') {
                 resultArray.push(this.readArray());
             } else if(readChar == '"') {

@@ -56,6 +56,7 @@ const jsonString = JSON.stringify(game);
 console.log(jsonString);
 
 const browser = JSONBrowser.parse(jsonString);
+console.log(JSON.parse(jsonString));
 console.log(browser.json);
 console.log(browser.nextScope('userInfo').index(0).get<User>("user"));
 
