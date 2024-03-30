@@ -48,6 +48,16 @@ const game: Game = {
             },
             level: 10,
             isOnline: true
+        },
+        {
+            user: {
+                id: 'user4',
+                name: 'Bug User',
+                age: 0,
+                gender: 'female',
+            },
+            level: 172839217319278123123,
+            isOnline: true
         }
     ]
 };
@@ -59,7 +69,7 @@ const browser = JSONBrowser.parse(jsonString);
 console.log(JSON.parse(jsonString));
 console.log(browser.json);
 console.log(browser.nextScope('userInfo').index(0).get<User>("user"));
+console.log(browser.nextScope('userInfo').index(3).safeNumberString('level'))
 
-const jsonString2 = '{"numbers": [[1,2,3,4],[5,6,7,8]]}';
-const browser2 = JSONBrowser.parse(jsonString2);
-console.log(browser2.json);
+const user3 = browser.nextScope('userInfo').index(2).get<User>('user');
+console.log(user3);
