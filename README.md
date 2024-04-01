@@ -27,6 +27,8 @@ npm install json-browser
     JSON 객체 안 key의 대한 값을 타입 T로 형변환하여 반환합니다.
 8. ##### ynToBoolean(key: string): boolean
     JSON 객체 안 key의 대한 값이 yes,y,n,no 라면 true 또는 false로 반환합니다.
+9. ##### values(key: string): JSONBrowser[]
+    JSON 객체 안 key의 대한 배열들의 각 요소를 JSONBrowser에 담아 배열로 반환합니다.
 - #### 사용방법(예시)
 ```typescript
 import JSONBrowser from 'json-browser';
