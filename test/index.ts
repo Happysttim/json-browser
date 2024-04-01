@@ -73,3 +73,11 @@ console.log(browser.nextScope('userInfo').index(3).safeNumberString('level'))
 
 const user3 = browser.nextScope('userInfo').index(2).get<User>('user');
 console.log(user3);
+
+const arrayJsonString = '{"objects": [{"id": "user1", "password":"1234"},{"id": "user2", "password":"abcd"},{"id": "user3", "password":"5678"},{"id": "user4", "password":"efgh"},{"id": "user5", "password":"9100"}]}'; 
+const arrayJsonBrowser = JSONBrowser.parse(arrayJsonString);
+
+arrayJsonBrowser.values('objects').forEach(browser => {
+    console.log(`id = ${browser.safeString('id')}`);
+    console.log(`password = ${browser.safeString('password')}`);
+});

@@ -38,6 +38,18 @@ class JSONBrowser {
         return 0;
     }
 
+    // MAX_SAFE_NUM 또는 MIN_SAFE_NUM 범위를 벗어나면 0을 반환
+    safeNumber(key: string): number {
+        if(this.checkObject()) {
+            const json = this.jsonBody as Record<string, number>;
+            if(!isNaN(json[key])) {
+                return json[key] > Number.MAX_SAFE_INTEGER || json[key] < Number.MIN_SAFE_INTEGER ? 0 : json[key];
+            }
+        }
+
+        return 0;
+    }
+
     safeBoolean(key: string): boolean {
         if(this.checkObject()) {
             const json = this.jsonBody as Record<string, boolean>;
@@ -51,6 +63,17 @@ class JSONBrowser {
             const json = this.jsonBody as Record<string, T[]>;
             return json[key] ?? [];
         }
+        return [];
+    }
+
+    values(key: string): JSONBrowser[] {
+        if(this.checkObject()) {
+            const json = this.jsonBody as Record<string, JSONValueLikes[]>;
+            return json[key].map<JSONBrowser>(valueLike => {
+                return new JSONBrowser(valueLike);
+            });
+        }
+
         return [];
     }
 
@@ -97,9 +120,8 @@ class JSONBrowser {
 
     static parse(json: string): JSONBrowser {
         const browser = new JSONBrowser({});
-        browser.jsonString = json.trimStart();
         browser.length = json.length;
-
+        browser.jsonString = json;
         browser.jsonBody = browser.readValue(browser.jsonBody) as JSONObject;
 
         return new JSONBrowser(browser.jsonBody);
